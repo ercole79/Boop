@@ -5,7 +5,7 @@
 		"description":"Trims leading and trailing whitespace.",
 		"author":"Joshua Nozzi",
 		"icon":"scissors",
-		"tags":"trim,whitespace,empty,space",
+		"tags":"trim,whitespace,empty,space"
 	}
 **/
 
