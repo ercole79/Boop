@@ -1,0 +1,4 @@
+{
+  "name": "Boop (script development)",
+  "install": "node --version && npm --version && node -e \"require('./.cursor/tools/boop-runtime.js'); console.log('Boop script runtime ready on Node ' + process.version)\""
+}
