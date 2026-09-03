@@ -439,6 +439,25 @@ Gw
                                     <action selector="closePickerMenu:" target="Voe-Tx-rLC" id="b8d-Jr-eLb"/>
                                 </connections>
                             </menuItem>
+                            <menuItem isSeparatorItem="YES" id="ae3-7x-R1i"/>
+                            <menuItem title="Toggle Structured Node" keyEquivalent="l" id="67m-fr-cv0">
+                                <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
+                                <connections>
+                                    <action selector="toggleStructuredNode:" target="unv-pE-gme" id="QyU-4H-amX"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Collapse All Structured Nodes" id="yzD-Ca-N9S">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="collapseAllStructuredNodes:" target="unv-pE-gme" id="kQa-Vl-D2T"/>
+                                </connections>
+                            </menuItem>
+                            <menuItem title="Expand All Structured Nodes" id="vLM-h3-IxE">
+                                <modifierMask key="keyEquivalentModifierMask"/>
+                                <connections>
+                                    <action selector="expandAllStructuredNodes:" target="unv-pE-gme" id="Yp0-CI-1jC"/>
+                                </connections>
+                            </menuItem>
                             <menuItem isSeparatorItem="YES" id="qeG-jv-U7I"/>
                             <menuItem title="Re-execute Last Script" keyEquivalent="B" id="5MU-C4-39m">
                                 <connections>
