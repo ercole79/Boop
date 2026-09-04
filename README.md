@@ -39,3 +39,7 @@ If you're just trying to get Boop, building from source might not be your best b
 
 - [Documentation](Boop/Documentation/Readme.md)
 - [Custom scripts](Boop/Documentation/CustomScripts.md)
+
+
+### Updates
+2026-09-04 - Added folding/unfolding option for JSON and XML
