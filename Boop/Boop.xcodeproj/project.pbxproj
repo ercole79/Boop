@@ -441,8 +441,8 @@
 			);
 			mainGroup = 2C20666921FD628E0082570E;
 			packageReferences = (
-				2C8BE17F249EBADC00099B73 /* XCRemoteSwiftPackageReference "savannakit" */,
-				2C8BE186249EBB3D00099B73 /* XCRemoteSwiftPackageReference "fuse-swift" */,
+				2C8BE17F249EBADC00099B73 /* XCLocalSwiftPackageReference "savannakit" */,
+				2C8BE186249EBB3D00099B73 /* XCLocalSwiftPackageReference "fuse-swift" */,
 			);
 			productRefGroup = 2C20667321FD628E0082570E /* Products */;
 			projectDirPath = "";
@@ -921,44 +921,36 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		2C8BE17F249EBADC00099B73 /* XCRemoteSwiftPackageReference "savannakit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/IvanMathy/savannakit";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		2C8BE17F249EBADC00099B73 /* XCLocalSwiftPackageReference "savannakit" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Vendor/savannakit;
 		};
-		2C8BE186249EBB3D00099B73 /* XCRemoteSwiftPackageReference "fuse-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/IvanMathy/fuse-swift";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.0.0;
-			};
+		2C8BE186249EBB3D00099B73 /* XCLocalSwiftPackageReference "fuse-swift" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Vendor/fuse-swift;
 		};
-/* End XCRemoteSwiftPackageReference section */
+/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		2C8BE180249EBADC00099B73 /* SavannaKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2C8BE17F249EBADC00099B73 /* XCRemoteSwiftPackageReference "savannakit" */;
+			package = 2C8BE17F249EBADC00099B73 /* XCLocalSwiftPackageReference "savannakit" */;
 			productName = SavannaKit;
 		};
 		2C8BE183249EBAEC00099B73 /* SavannaKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2C8BE17F249EBADC00099B73 /* XCRemoteSwiftPackageReference "savannakit" */;
+			package = 2C8BE17F249EBADC00099B73 /* XCLocalSwiftPackageReference "savannakit" */;
 			productName = SavannaKit;
 		};
 		2C8BE187249EBB3D00099B73 /* Fuse */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2C8BE186249EBB3D00099B73 /* XCRemoteSwiftPackageReference "fuse-swift" */;
+			package = 2C8BE186249EBB3D00099B73 /* XCLocalSwiftPackageReference "fuse-swift" */;
 			productName = Fuse;
 		};
 		2C8BE189249EBB4200099B73 /* Fuse */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 2C8BE186249EBB3D00099B73 /* XCRemoteSwiftPackageReference "fuse-swift" */;
+			package = 2C8BE186249EBB3D00099B73 /* XCLocalSwiftPackageReference "fuse-swift" */;
 			productName = Fuse;
 		};
 /* End XCSwiftPackageProductDependency section */

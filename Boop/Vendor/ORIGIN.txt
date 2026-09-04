@@ -1,0 +1,9 @@
+Vendored Swift packages used by 1ST-Utility.
+
+savannakit
+  source: https://github.com/IvanMathy/savannakit
+  revision: bb51ee074152a7361e7085d10723f699c79fe673
+
+fuse-swift
+  source: https://github.com/IvanMathy/fuse-swift
+  revision: acb9a2ec2789ce1dcca4d01872a20da801e7ac55 (2.0.0)
