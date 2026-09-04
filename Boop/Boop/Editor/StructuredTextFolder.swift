@@ -18,6 +18,12 @@ struct StructuredNode: Hashable {
     let summary: String
 }
 
+struct FoldMarker: Hashable {
+    let nodeID: Int
+    let lineNumber: Int
+    let isCollapsed: Bool
+}
+
 struct StructuredDocument {
     let kind: StructuredContentKind
     let sourceText: String
@@ -53,6 +59,44 @@ final class StructuredTextFolder {
 
     var hasNodes: Bool {
         !document.nodes.isEmpty
+    }
+
+    func foldMarkers() -> [FoldMarker] {
+        let display = currentDisplayText as NSString
+        var markers: [FoldMarker] = []
+
+        for node in document.nodes {
+            if isObscuredByCollapsedAncestor(node) {
+                continue
+            }
+
+            let displayOffset = mapSourceOffsetToDisplay(node.sourceRange.location)
+            markers.append(
+                FoldMarker(
+                    nodeID: node.id,
+                    lineNumber: Self.lineNumber(at: displayOffset, in: display),
+                    isCollapsed: collapsedNodeIDs.contains(node.id)
+                )
+            )
+        }
+
+        return markers
+    }
+
+    @discardableResult
+    func toggleNode(id: Int) -> Bool {
+        guard document.nodes.contains(where: { $0.id == id }) else {
+            return false
+        }
+
+        if collapsedNodeIDs.contains(id) {
+            collapsedNodeIDs.remove(id)
+        } else {
+            collapsedNodeIDs.insert(id)
+        }
+
+        render()
+        return true
     }
 
     func collapseAll() {
@@ -279,6 +323,43 @@ final class StructuredTextFolder {
         }
 
         return visibleNodes
+    }
+
+    private func isObscuredByCollapsedAncestor(_ node: StructuredNode) -> Bool {
+        let nodeStart = node.sourceRange.location
+        let nodeEnd = nodeStart + node.sourceRange.length
+
+        for other in document.nodes where other.id != node.id && collapsedNodeIDs.contains(other.id) {
+            let otherStart = other.sourceRange.location
+            let otherEnd = otherStart + other.sourceRange.length
+            if nodeStart >= otherStart && nodeEnd <= otherEnd && node.sourceRange.length < other.sourceRange.length {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    static func lineNumber(at offset: Int, in string: NSString) -> Int {
+        let clamped = max(0, min(string.length, offset))
+        var line = 1
+        if clamped == 0 {
+            return line
+        }
+
+        for index in 0..<clamped {
+            let character = string.character(at: index)
+            if character == 10 {
+                line += 1
+            } else if character == 13 {
+                let next = index + 1
+                if next >= clamped || string.character(at: next) != 10 {
+                    line += 1
+                }
+            }
+        }
+
+        return line
     }
 
     private func clampDisplayOffset(_ offset: Int) -> Int {

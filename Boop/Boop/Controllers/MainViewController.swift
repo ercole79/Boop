@@ -17,6 +17,7 @@ class MainViewController: NSViewController {
     
     private var structuredTextFolder: StructuredTextFolder?
     private var isApplyingStructuredFolding = false
+    private var lineNumberRulerView: LineNumberRulerView?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +32,29 @@ class MainViewController: NSViewController {
         
         editorView.contentTextView.selectedTextAttributes = [.backgroundColor:NSColor(red:0.19, green:0.44, blue:0.71, alpha:1.0), .foregroundColor: NSColor.white]
         
+        installLineNumberRuler()
+    }
+    
+    override func viewDidAppear() {
+        super.viewDidAppear()
+        installLineNumberRuler()
+        view.window?.makeFirstResponder(editorView.contentTextView)
+    }
+    
+    private func installLineNumberRuler() {
+        let textView = editorView.contentTextView
+        let scrollView = editorView.scrollView
+        
+        if lineNumberRulerView == nil {
+            lineNumberRulerView = LineNumberRulerView(textView: textView)
+            lineNumberRulerView?.foldDelegate = self
+        }
+        
+        scrollView.verticalRulerView = lineNumberRulerView
+        scrollView.hasVerticalRuler = true
+        scrollView.rulersVisible = true
+        scrollView.verticalRulerView?.clipsToBounds = true
+        scrollView.tile()
     }
     @IBAction func openHelp(_ sender: Any) {
         open(url: "https://boop.okat.best/docs/")
@@ -138,24 +162,18 @@ class MainViewController: NSViewController {
     
     private func applyStructuredText(_ newText: String, cursorLocation: Int) {
         let textView = editorView.contentTextView
-        let currentLength = textView.textStorage?.length ?? (textView.string as NSString).length
-        let fullRange = NSRange(location: 0, length: currentLength)
-        
-        guard textView.shouldChangeText(in: fullRange, replacementString: newText) else {
-            return
-        }
         
         isApplyingStructuredFolding = true
         defer { isApplyingStructuredFolding = false }
         
-        textView.textStorage?.beginEditing()
-        textView.textStorage?.replaceCharacters(in: fullRange, with: newText)
-        textView.textStorage?.endEditing()
+        // Use SyntaxTextView.text so lexer/layout/ruler stay consistent.
+        editorView.text = newText
         
-        let newLength = textView.textStorage?.length ?? (newText as NSString).length
+        let newLength = (newText as NSString).length
         let clampedLocation = max(0, min(newLength, cursorLocation))
         textView.setSelectedRange(NSRange(location: clampedLocation, length: 0))
-        textView.didChangeText()
+        lineNumberRulerView?.needsDisplay = true
+        view.window?.makeFirstResponder(textView)
     }
 }
 
@@ -165,10 +183,17 @@ extension MainViewController: SyntaxTextViewDelegate {
     }
     func didChangeText(_ syntaxTextView: SyntaxTextView) {
         guard !isApplyingStructuredFolding else {
+            lineNumberRulerView?.needsDisplay = true
             return
         }
         
-        structuredTextFolder = nil
+        structuredTextFolder = StructuredTextFolder(text: syntaxTextView.text)
+        if editorView.scrollView.verticalRulerView !== lineNumberRulerView {
+            installLineNumberRuler()
+        }
+        editorView.scrollView.hasVerticalRuler = true
+        editorView.scrollView.rulersVisible = true
+        lineNumberRulerView?.needsDisplay = true
     }
     
     func didChangeSelectedRange(_ syntaxTextView: SyntaxTextView, selectedRange: NSRange) {
@@ -184,4 +209,29 @@ extension MainViewController: SyntaxTextViewDelegate {
     }
     
     
+}
+
+extension MainViewController: LineNumberRulerViewDelegate {
+    func foldMarkers(for ruler: LineNumberRulerView) -> [FoldMarker] {
+        if structuredTextFolder == nil {
+            structuredTextFolder = StructuredTextFolder(text: editorView.text)
+        }
+        return structuredTextFolder?.foldMarkers() ?? []
+    }
+    
+    func lineNumberRulerView(_ ruler: LineNumberRulerView, didToggleFoldMarker marker: FoldMarker) {
+        guard synchronizeStructuredFoldingState(), let folder = structuredTextFolder else {
+            NSSound.beep()
+            return
+        }
+        
+        let sourceOffset = folder.mapDisplayOffsetToSource(selectedRange().location)
+        guard folder.toggleNode(id: marker.nodeID) else {
+            NSSound.beep()
+            return
+        }
+        
+        let newDisplayOffset = folder.mapSourceOffsetToDisplay(sourceOffset)
+        applyStructuredText(folder.currentDisplayText, cursorLocation: newDisplayOffset)
+    }
 }

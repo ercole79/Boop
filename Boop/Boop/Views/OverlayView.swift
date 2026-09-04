@@ -15,10 +15,20 @@ class OverlayView: NSView {
     required init?(coder decoder: NSCoder) {
         super.init(coder: decoder)
         self.wantsLayer = true
-        self.animator().isHidden = true
-        self.alphaValue = 0;
+        self.clipsToBounds = true
+        // Set hidden directly — animator() during init can leave the view
+        // visible to hit-testing while alpha is 0, blocking editor input.
+        self.isHidden = true
+        self.alphaValue = 0
         
         setBackground()
+    }
+    
+    override func hitTest(_ point: NSPoint) -> NSView? {
+        guard !isHidden, alphaValue > 0.01 else {
+            return nil
+        }
+        return super.hitTest(point)
     }
     
     func setBackground() {
