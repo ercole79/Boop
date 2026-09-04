@@ -20,28 +20,6 @@ class UpdateBuddy: NSObject {
     }
     
     func check() {
-        
-        guard let url = URL(string: "https://boop.okat.best/version.json") else {
-            print("Cannot create update checker URL...")
-            return
-        }
-        
-        let config = URLSessionConfiguration.default
-        config.requestCachePolicy = .reloadIgnoringLocalCacheData
-        config.urlCache = nil
-
-        let session = URLSession.init(configuration: config)
-
-        session.dataTask(with: URLRequest(url: url), completionHandler: { data, response, error -> Void in
-            guard let data = data else {
-                return
-            }
-            
-            DispatchQueue.main.async {
-                try? self.handleResponse(data: data)
-            }
-            
-        }).resume()
     }
     
     private func handleResponse(data: Data) throws {
